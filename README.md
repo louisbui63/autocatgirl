@@ -4,7 +4,7 @@ Display new catgirls every time you run your terminal
 
 ## usage
 
-- install the dependencies: `wget`, `imagemagic`, `jq`, `neofetch`
+- install the dependencies: `wget`, `imagemagick`, `jq`, `neofetch`
 - move `catgirl.sh` wherever you please
 - add the following at the end of your `~/.zshrc` or `~/.bashrc` or whatever:
 
