@@ -1,7 +1,73 @@
 #! /bin/bash
 
+# ================   Autocatgirl    ================
+# Script used to show a cat girl when opening a bash
+# Original Author : louisbui63
+# Contributor : Kovalenko2002
+# ==================================================
+
+# VARIABLES
 API_URL=https://nekos.life/api/v2/img/neko
+FOLDER_PATH="$HOME/.autocatgirl"
+BASHRC_PATH="$HOME/.bashrc"
+
 TMP_FILE=/tmp/catgirl
+
+HELP="Utilisation : catgirl [OPTION] ... [CHEMIN]
+Charge une image de catgirl pour un affichage par neofetch.
+
+    - h         Affiche cette aide
+    - s         Sauvegarde l'image dans le chemin donné
+    - n         Sauvegarde le lien de l'image dans .autocatgirl/favorite
+    - f         Affiche les favoris
+
+Exemples :
+  catgirl       # Récupère et sauvegarde une image
+  catgirl -s    # sauvegarde l'image sous le nom catgirl ici
+  catgirl -n    # Sauvegarde l'adresse de l'image actuelle dans les favoris
+"
+
+# Options
+while getopts "hs:nf" opt
+do
+    case $opt in 
+        h)
+            echo "$HELP"
+            exit 0
+            ;;
+        s)
+            cp "$TMP_FILE" "$OPTARG"
+            if [ $? -ne 0 ]
+            then
+                echo "La sauvegarde de l'image n'a pas aboutie"
+                exit 1
+            fi
+            echo "Image sauvegardée à $OPTARG"
+            exit 0
+            ;;
+        n)
+            mkdir -p "$HOME/.autocatgirl"
+            (tail -n 2 "$TMP_FILE-reference" | head -n 1) >> "$FOLDER_PATH/favorites"
+            if [ $? -ne 0 ]
+            then
+                echo "L'image n'a pas pu être ajoutée aux favoris"
+                exit 1
+            fi
+            echo "Saving address to favorite"
+            exit 0
+            ;;
+        f)
+            echo "Mes favoris : "
+            cat "$FOLDER_PATH/favorites"
+            exit 0
+            ;;
+        \?)
+            echo "Mauvais arguments donnés"
+            echo "$HELP"
+            exit 1
+            ;;
+    esac
+done 
 
 # Do not worry my child, simpky reach 1490.
 NO_NETWORK_IMAGE="/9j/4AAQSkZJRgABAQEBLAEsAAD/4QCuRXhpZgAASUkqAAgAAAAHABIBAwABAAAAAQAAABoBBQAB
@@ -1490,7 +1556,11 @@ AGHvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvuSoXlju0n/AOOziA/q/fffffffffffffff
 fffffffffff/2Q=="
 
 # Makes a request and cleans it :
-wget -q $(wget -q "$API_URL" -O - | jq -r .url) -O "$TMP_FILE" > /dev/null 2>&1 
+
+IDENTIFIER=$(wget -q "$API_URL" -O - | jq -r .url)
+echo $IDENTIFIER >> "$TMP_FILE-reference"
+
+wget -q "$IDENTIFIER" -O "$TMP_FILE" > /dev/null 2>&1 
 
 # Check if it has failed
 # If it has failed will generate a sad neko boy
