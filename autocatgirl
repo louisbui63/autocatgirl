@@ -9,7 +9,7 @@ FOLDER_PATH="$HOME/.autocatgirl"
 FAVORITE_PATH="$FOLDER_PATH/favorites"
 OLD_IMAGE_PATH="$FOLDER_PATH/old/"
 NEW_IMAGE_PATH="$FOLDER_PATH/new/"
-ERROR_IMAGE="noNetwork.png"
+# ERROR_IMAGE="noNetwork.png"
 
 HELP="Utilisation : autocatgirl [OPTION] ... [CHEMIN]
 Charge une image de catgirl afin de l'afficher avec Neofetch.
@@ -19,9 +19,11 @@ Charge une image de catgirl afin de l'afficher avec Neofetch.
   -a        Ajoute le lien de l'image aux favoris
   -f        Affiche les favoris
 "
+
 #   ==== Checks ====
 # Simply controlling the existence of folders and files
 
+# Global
 if [ ! -e $FOLDER_PATH ]
 then
     mkdir $FOLDER_PATH
@@ -30,16 +32,19 @@ then
     mkdir $OLD_IMAGE_PATH
 fi
 
+# New folder
 if [ ! -e $NEW_IMAGE_PATH ]
 then
     mkdir $NEW_IMAGE_PATH
 fi
 
+# Old folder
 if [ ! -e $OLD_IMAGE_PATH ]
 then
     mkdir $OLD_IMAGE_PATH
 fi
 
+# Fav file
 if [ ! -f $FAVORITE_PATH ]
 then
     touch $FAVORITE_PATH
@@ -102,10 +107,14 @@ wget -q "$IMAGE_URL" -O "$FOLDER_PATH/$IMAGE_NAME" > /dev/null 2>&1
 
 if [ $? -ne 0 ]
 then 
-    IMAGE_NAME=$ERROR_IMAGE
-    rm $OLD_IMAGE_PATH* > /dev/null 2>&1
-    mv $NEW_IMAGE_PATH* "$OLD_IMAGE_PATH" > /dev/null 2>&1
-    cp "$FOLDER_PATH/$IMAGE_NAME" "$NEW_IMAGE_PATH" > /dev/null 2>&1
+    # For now let's just stick to doing nothing 
+    # Once I get the motivation to draw something
+    # We'll simply uncomment and add it here
+
+    # IMAGE_NAME=$ERROR_IMAGE
+    # rm $OLD_IMAGE_PATH* > /dev/null 2>&1
+    # mv $NEW_IMAGE_PATH* "$OLD_IMAGE_PATH" > /dev/null 2>&1
+    # cp "$FOLDER_PATH/$IMAGE_NAME" "$NEW_IMAGE_PATH" > /dev/null 2>&1
     exit 1
 fi
 
