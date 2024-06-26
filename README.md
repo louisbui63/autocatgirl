@@ -6,15 +6,18 @@ Display new catgirls every time you run your terminal
 
 ### Step 1 : Dependancies
 To install you'll need the packages : 
-
+* neofetch
+* wget
+* imagemagick
+* jq
 
 ### Step 2 : Files
 
-Copy ``autocatgirl`` to /bin and edit your .bashrc or equivalent with : 
+Copy ``autocatgirl`` to /bin. Launch once to set the folders. Edit your .bashrc or equivalent with : 
 ```bash
 # Autocatgirl
-neofetch --backend chafa --source $HOME/.autocatgirl/new/$(ls $HOME/.autocatgirl/new) --size none
-(autocatgirl &) &>
+neowofetch --backend kitty --source "$HOME/.autocatgirl/new/$(ls $HOME/.autocatgirl/new)" --size none
+(autocatgirl &) &> /dev/null
 ```
 
 ### Step 3 : Enjoy & share !
@@ -22,14 +25,15 @@ Enjoy and share with others.
 
 ## usage
 When opening a terminal a catgirl image will be loaded. You can use autocatgirl to do the next action :
-> autocagirl -a
+
 Allows you to save the reference of the last image shown.
+> autocatgirl -a
 
+Allows you to save the last image shown to PATH.
 > autocatgirl -s PATH
-Allows you to save the last image shown.
 
-> autocagirl -f
 Shows your favorite.
+> autocatgirl -f
 
-> autocagirl -h
 Shows a quick help.
+> autocatgirl -h

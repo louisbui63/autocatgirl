@@ -124,5 +124,6 @@ fi
 rm $OLD_IMAGE_PATH* > /dev/null 2>&1
 mv $NEW_IMAGE_PATH* "$OLD_IMAGE_PATH" > /dev/null 2>&1
 mv "$FOLDER_PATH/$IMAGE_NAME" "$NEW_IMAGE_PATH" > /dev/null 2>&1
+convert "$NEW_IMAGE_PATH/$IMAGE_NAME" -resize 512x512\> "$NEW_IMAGE_PATH/$IMAGE_NAME"
 
 rm -rf ~/.cache/thumbnails/neofetch/*
