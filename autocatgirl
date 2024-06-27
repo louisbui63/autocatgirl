@@ -1,9 +1,9 @@
-#! /bin/bash
+#! /bin/sh
 
 #   ==== Variables & Path   ====
 
-API_URL=https://nekos.life/api/v2/img/neko
-IMAGE_URL=https://cdn.nekos.life/neko/
+API_URL="https://nekos.life/api/v2/img/neko"
+IMAGE_URL="https://cdn.nekos.life/neko/"
 FOLDER_PATH="$HOME/.autocatgirl"
 
 FAVORITE_PATH="$FOLDER_PATH/favorites"
@@ -24,30 +24,30 @@ Charge une image de catgirl afin de l'afficher avec Neofetch.
 # Simply controlling the existence of folders and files
 
 # Global
-if [ ! -e $FOLDER_PATH ]
+if [ ! -e "$FOLDER_PATH" ]
 then
-    mkdir $FOLDER_PATH
-    touch $FAVORITE_PATH
-    mkdir $NEW_IMAGE_PATH
-    mkdir $OLD_IMAGE_PATH
+    mkdir "$FOLDER_PATH"
+    touch "$FAVORITE_PATH"
+    mkdir "$NEW_IMAGE_PATH"
+    mkdir "$OLD_IMAGE_PATH"
 fi
 
 # New folder
-if [ ! -e $NEW_IMAGE_PATH ]
+if [ ! -e "$NEW_IMAGE_PATH" ]
 then
-    mkdir $NEW_IMAGE_PATH
+    mkdir "$NEW_IMAGE_PATH"
 fi
 
 # Old folder
-if [ ! -e $OLD_IMAGE_PATH ]
+if [ ! -e "$OLD_IMAGE_PATH" ]
 then
-    mkdir $OLD_IMAGE_PATH
+    mkdir "$OLD_IMAGE_PATH"
 fi
 
 # Fav file
-if [ ! -f $FAVORITE_PATH ]
+if [ ! -f "$FAVORITE_PATH" ]
 then
-    touch $FAVORITE_PATH
+    touch "$FAVORITE_PATH"
 fi
 
 #   ==== Command operation ====
@@ -61,8 +61,8 @@ do
         exit 0
         ;;
     s)
-        echo "Sauvegarde de l'image $(ls $OLD_IMAGE_PATH) dans : $OPTARG"
-        cp $OLD_IMAGE_PATH* "$OPTARG"
+        echo "Sauvegarde de l'image $(ls "$OLD_IMAGE_PATH") dans : $OPTARG"
+        cp "$OLD_IMAGE_PATH"* "$OPTARG"
         if [ $? -ne 0 ]
         then 
             echo "Erreur l'image n'a pas pu être sauvegardée."
@@ -121,8 +121,8 @@ fi
 # Deletes the image in old folder
 # Moves the image frome new to old folder
 # Moves the downloaded one to new folder
-rm $OLD_IMAGE_PATH* > /dev/null 2>&1
-mv $NEW_IMAGE_PATH* "$OLD_IMAGE_PATH" > /dev/null 2>&1
+rm "$OLD_IMAGE_PATH"* > /dev/null 2>&1
+mv "$NEW_IMAGE_PATH"* "$OLD_IMAGE_PATH" > /dev/null 2>&1
 mv "$FOLDER_PATH/$IMAGE_NAME" "$NEW_IMAGE_PATH" > /dev/null 2>&1
 convert "$NEW_IMAGE_PATH/$IMAGE_NAME" -resize 512x512\> "$NEW_IMAGE_PATH/$IMAGE_NAME"
 
