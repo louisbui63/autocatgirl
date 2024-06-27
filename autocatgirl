@@ -61,7 +61,7 @@ do
         exit 0
         ;;
     s)
-        echo "Sauvegarde de l'image $(ls "$OLD_IMAGE_PATH") dans : $OPTARG"
+        echo "Sauvegarde de l'image $(ls -c "$OLD_IMAGE_PATH" | head -n 1) dans : $OPTARG"
         cp "$OLD_IMAGE_PATH"* "$OPTARG"
         if [ $? -ne 0 ]
         then 
@@ -72,8 +72,8 @@ do
         exit 0
         ;;
     a)
-        echo "Ajout de $(ls $OLD_IMAGE_PATH) dans tes favoris."
-        echo $IMAGE_URL$(ls $OLD_IMAGE_PATH) >> $FAVORITE_PATH
+        echo "Ajout de $(ls -c $OLD_IMAGE_PATH | head -n 1) dans tes favoris."
+        echo $IMAGE_URL$(ls -c $OLD_IMAGE_PATH | head -n 1) >> $FAVORITE_PATH
         if [ $? -ne 0 ]
         then 
             echo "Erreur l'image n'a pas pu être ajoutée aux favoris."
