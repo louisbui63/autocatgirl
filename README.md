@@ -16,7 +16,7 @@ To install you'll need the packages :
 Copy ``autocatgirl`` to /bin. Launch once to set the folders. Edit your .bashrc or equivalent with : 
 ```bash
 # Autocatgirl
-neowofetch --backend kitty --source "$HOME/.autocatgirl/new/$(ls -c "$HOME/.autocatgirl/new"* | head -n 1)" --size none
+neowofetch --backend kitty --source "$HOME/.autocatgirl/new/$(ls -c "$HOME/.autocatgirl/new"* | tail -n 1)" --size none
 (autocatgirl &) &> /dev/null
 ```
 
