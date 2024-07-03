@@ -6,7 +6,7 @@ Display new catgirls every time you run your terminal
 
 ### Step 1 : Dependancies
 To install you'll need the packages : 
-* neofetch
+* neowofetch
 * wget
 * imagemagick
 * jq
@@ -16,7 +16,7 @@ To install you'll need the packages :
 Copy ``autocatgirl`` to ``/bin``. Launch once to set the folders. Edit your .bashrc or equivalent with : 
 ```bash
 # Autocatgirl
-neofetch --backend kitty --source "$HOME/.autocatgirl/new/$(ls -c "$HOME/.autocatgirl/new"* | tail -n 1)" --size none
+neowofetch --backend kitty --source "$HOME/.autocatgirl/new/$(ls -c "$HOME/.autocatgirl/new"* | tail -n 1)" --size none
 (autocatgirl &) &> /dev/null
 ```
 
