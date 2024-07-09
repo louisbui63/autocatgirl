@@ -1,0 +1,114 @@
+#! /bin/sh
+
+#   ==== Variables & Path   ====
+
+API_URL="https://nekos.life/api/v2/img/neko"
+IMAGE_URL="https://cdn.nekos.life/neko/"
+FOLDER_PATH="$HOME/.autocatgirl"
+
+FAVORITE_PATH="$FOLDER_PATH/favorites"
+OLD_IMAGE_PATH="$FOLDER_PATH/old/"
+NEW_IMAGE_PATH="$FOLDER_PATH/new/"
+# ERROR_IMAGE="noNetwork.png"
+
+HELP="Use : autocatgirl [OPTION] ... [PATH]
+Loads a catgirl image to show in Neofetch.
+
+  -h        Print this help
+  -s        Saves the image to the give path
+  -a        Saves the image link to your favorites
+  -f        Shows your favorites
+"
+
+# Creates the various folder and file if they don't exist
+
+mkdir -p "$FOLDER_PATH"
+mkdir -p "$NEW_IMAGE_PATH"
+mkdir -p "$OLD_IMAGE_PATH"
+touch "$FAVORITE_PATH"
+
+
+
+# Manages all call to autocatgirl with parameters
+
+while getopts "hs:af" option
+do
+    case $option in
+    h)
+        echo "$HELP"
+        exit 0
+        ;;
+    s)
+        echo "Saving your catgirl $(ls -c "$OLD_IMAGE_PATH" | tail -n 1) at the path : $OPTARG"
+        cp "$OLD_IMAGE_PATH"* "$OPTARG"
+        if [ $? -ne 0 ]
+        then 
+            echo "ERROR : Unable to save the image."
+            exit 1
+        fi
+        echo "Image saved successfully !"
+        exit 0
+        ;;
+    a)
+        FAV_IMAGE=$(ls -c $OLD_IMAGE_PATH | tail -n 1)
+        echo "Adding $FAV_IMAGE to your favorites."
+
+        if [ $(grep "$FAV_IMAGE" "$FAVORITE_PATH") ]
+        then
+            echo "WARNING : This image is already in your favorites."
+
+        else
+            echo "$IMAGE_URL$FAV_IMAGE" >> "$FAVORITE_PATH"
+            if [ $? -ne 0 ]
+            then 
+                echo "ERROR : Unable to add this catgirl to favorites."
+                exit 1
+            fi
+        fi
+        exit 0
+        ;;
+    f)
+        echo "Your most beloved catgirls :"
+        cat "$FAVORITE_PATH"
+        exit 0
+        ;;
+    \?)
+        echo "ERROR : Wrong arguments given"
+        echo "$HELP"
+        exit 1
+        ;;
+    esac
+done
+
+# Calls the API and update the new and old image folder.
+# Note : this could probably be done with find and exec but hey it works
+# Note2 : Yeah regex everywhere is probably not a very a safe idea. I'm open to suggestion.
+
+# Downloading image
+IMAGE_URL=$(curl "$API_URL" -s | jq -r .url)
+IMAGE_NAME=$(echo "$IMAGE_URL" | rev | cut -d'/' -f1 | rev)
+
+wget -q "$IMAGE_URL" -O "$FOLDER_PATH/$IMAGE_NAME" > /dev/null 2>&1
+
+if [ $? -ne 0 ]
+then 
+    # For now let's just stick to doing nothing 
+    # Once I get the motivation to draw something
+    # We'll simply uncomment and add it here
+
+    # IMAGE_NAME=$ERROR_IMAGE
+    # rm $OLD_IMAGE_PATH* > /dev/null 2>&1
+    # mv $NEW_IMAGE_PATH* "$OLD_IMAGE_PATH" > /dev/null 2>&1
+    # cp "$FOLDER_PATH/$IMAGE_NAME" "$NEW_IMAGE_PATH" > /dev/null 2>&1
+    exit 1
+fi
+
+# Deletes the image in old folder
+# Moves the image frome new to old folder
+# Moves the downloaded one to new folder
+rm "$OLD_IMAGE_PATH"* > /dev/null 2>&1
+mv "$NEW_IMAGE_PATH"* "$OLD_IMAGE_PATH" > /dev/null 2>&1
+mv "$FOLDER_PATH/$IMAGE_NAME" "$NEW_IMAGE_PATH" > /dev/null 2>&1
+convert "$NEW_IMAGE_PATH/$IMAGE_NAME" -resize 512x512\> "$NEW_IMAGE_PATH/$IMAGE_NAME"
+
+rm -rf ~/.cache/thumbnails/neofetch/*
