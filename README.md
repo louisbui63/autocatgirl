@@ -13,7 +13,7 @@ To install you'll need the packages :
 
 ### Step 2 : Files
 
-Copy ``autocatgirl`` to ``/bin``. Launch once to set the folders. Edit your .bashrc or equivalent with : 
+Copy ``autocatgirl`` to ``/usr/local/bin``. Launch once to set the folders. Edit your .bashrc or equivalent with : 
 ```bash
 # Autocatgirl
 neowofetch --backend kitty --source "$HOME/.autocatgirl/new/$(ls -c "$HOME/.autocatgirl/new"* | tail -n 1)" --size none
