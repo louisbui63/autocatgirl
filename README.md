@@ -5,11 +5,7 @@ Display new catgirls every time you run your terminal
 ## Installation 
 
 ### Step 1 : Dependancies
-To install you'll need the packages : 
-* neowofetch
-* wget
-* imagemagick
-* jq
+Install the dependencies: `wget`, `imagemagick`, `jq`, `neowofetch`
 
 ### Step 2 : Files
 
@@ -22,10 +18,7 @@ neowofetch --backend kitty --source "$HOME/.autocatgirl/new/$(ls -c "$HOME/.auto
 
 > Execute autocatgirl at least 2 times so that it can set up its folder and preloaded images.
 
-### Step 3 : Enjoy & share !
-Enjoy and share with others.
-
-## usage
+### Step 3 : Usage
 When opening a terminal a catgirl image will be loaded. You can use autocatgirl to do the next action :
 
 Allows you to save the reference of the last image shown.
@@ -39,3 +32,6 @@ Shows your favorite.
 
 Shows a quick help.
 > autocatgirl -h
+
+### Step 4 : Enjoy & share !
+Enjoy and share with others.
