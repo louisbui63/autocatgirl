@@ -84,6 +84,9 @@ done
 # Note : this could probably be done with find and exec but hey it works
 # Note2 : Yeah regex everywhere is probably not a very a safe idea. I'm open to suggestion.
 
+# Delete potential remains from previous interrupted executions
+rm -f $FOLDER_PATH/neko*
+
 # Downloading image
 IMAGE_URL=$(curl "$API_URL" -s | jq -r .url)
 IMAGE_NAME=$(echo "$IMAGE_URL" | rev | cut -d'/' -f1 | rev)
