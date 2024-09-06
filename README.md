@@ -21,16 +21,16 @@ neowofetch --backend kitty --source "$HOME/.autocatgirl/new/$(ls -c "$HOME/.auto
 ### Step 3 : Usage
 When opening a terminal a catgirl image will be loaded. You can use autocatgirl to perform the following actions :
 
-> autocatgirl -a
+`autocatgirl -a` \
 Allows you to save the reference of the last image shown.
 
-> autocatgirl -s PATH
+`autocatgirl -s PATH` \
 Allows you to save the last image shown to path PATH.
 
-> autocatgirl -f
+`autocatgirl -f` \
 Shows the images you saved
 
-> autocatgirl -h
+`autocatgirl -h` \
 Shows a quick help.
 
 ### Step 4 : Enjoy & share !
