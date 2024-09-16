@@ -82,6 +82,14 @@ do
                 if [ -f "$OPTION_PATH/off" ]
                 then
                     rm $OPTION_PATH/off
+                    IMAGE_URL=$(curl "$API_URL" -s | jq -r .url)
+                    IMAGE_NAME=$(echo "$IMAGE_URL" | rev | cut -d'/' -f1 | rev)
+
+                    (
+                        wget -q "$IMAGE_URL" -O "$FOLDER_PATH/$IMAGE_NAME" > /dev/null 2>&1
+                        mv "$FOLDER_PATH/$IMAGE_NAME" "$NEW_IMAGE_PATH" > /dev/null 2>&1
+                        convert "$NEW_IMAGE_PATH/$IMAGE_NAME" -resize 512x512\> "$NEW_IMAGE_PATH/$IMAGE_NAME"
+                    )&
                     echo "Cute catgirls will now appear in every new terminal"
                 else
                     echo "Catgirls already appear in your terminal"
@@ -91,6 +99,8 @@ do
                 if ! [ -f "$OPTION_PATH/off" ]
                 then
                     touch "${OPTION_PATH}off"
+                    rm "$OLD_IMAGE_PATH"* > /dev/null 2>&1
+                    mv "$NEW_IMAGE_PATH"* "$OLD_IMAGE_PATH" > /dev/null 2>&1
                     echo "Catgirls will no longer appear in your terminal, have they done something wrong ?"
                 else
                     echo "Catgirls already don't appear, do you hate them that much ?"
@@ -110,35 +120,37 @@ done
 # Note : this could probably be done with find and exec but hey it works
 # Note2 : Yeah regex everywhere is probably not a very a safe idea. I'm open to suggestion.
 
-# Delete potential remains from previous interrupted executions
-rm -f $FOLDER_PATH/neko*
 
-# Downloading image
-IMAGE_URL=$(curl "$API_URL" -s | jq -r .url)
-IMAGE_NAME=$(echo "$IMAGE_URL" | rev | cut -d'/' -f1 | rev)
-
-wget -q "$IMAGE_URL" -O "$FOLDER_PATH/$IMAGE_NAME" > /dev/null 2>&1
-
-if [ $? -ne 0 ]
-then 
-    # For now let's just stick to doing nothing 
-    # Once I get the motivation to draw something
-    # We'll simply uncomment and add it here
-
-    # IMAGE_NAME=$ERROR_IMAGE
-    # rm $OLD_IMAGE_PATH* > /dev/null 2>&1
-    # mv $NEW_IMAGE_PATH* "$OLD_IMAGE_PATH" > /dev/null 2>&1
-    # cp "$FOLDER_PATH/$IMAGE_NAME" "$NEW_IMAGE_PATH" > /dev/null 2>&1
-    exit 1
-fi
-
-# Deletes the image in old folder
-# Moves the image frome new to old folder
-# Moves the downloaded one to new folder
-rm "$OLD_IMAGE_PATH"* > /dev/null 2>&1
-mv "$NEW_IMAGE_PATH"* "$OLD_IMAGE_PATH" > /dev/null 2>&1
 if ! [ -f "$OPTION_PATH/off" ]
 then
+    # Delete potential remains from previous interrupted executions
+    rm -f $FOLDER_PATH/neko*
+
+    # Downloading image
+    IMAGE_URL=$(curl "$API_URL" -s | jq -r .url)
+    IMAGE_NAME=$(echo "$IMAGE_URL" | rev | cut -d'/' -f1 | rev)
+
+    wget -q "$IMAGE_URL" -O "$FOLDER_PATH/$IMAGE_NAME" > /dev/null 2>&1
+
+    if [ $? -ne 0 ]
+    then 
+        # For now let's just stick to doing nothing 
+        # Once I get the motivation to draw something
+        # We'll simply uncomment and add it here
+
+        # IMAGE_NAME=$ERROR_IMAGE
+        # rm $OLD_IMAGE_PATH* > /dev/null 2>&1
+        # mv $NEW_IMAGE_PATH* "$OLD_IMAGE_PATH" > /dev/null 2>&1
+        # cp "$FOLDER_PATH/$IMAGE_NAME" "$NEW_IMAGE_PATH" > /dev/null 2>&1
+        exit 1
+    fi
+
+    # Deletes the image in old folder
+    # Moves the image frome new to old folder
+    # Moves the downloaded one to new folder
+    rm "$OLD_IMAGE_PATH"* > /dev/null 2>&1
+    mv "$NEW_IMAGE_PATH"* "$OLD_IMAGE_PATH" > /dev/null 2>&1
+
     mv "$FOLDER_PATH/$IMAGE_NAME" "$NEW_IMAGE_PATH" > /dev/null 2>&1
     convert "$NEW_IMAGE_PATH/$IMAGE_NAME" -resize 512x512\> "$NEW_IMAGE_PATH/$IMAGE_NAME"
 fi
