@@ -9,6 +9,7 @@ FOLDER_PATH="$HOME/.autocatgirl"
 FAVORITE_PATH="$FOLDER_PATH/favorites"
 OLD_IMAGE_PATH="$FOLDER_PATH/old/"
 NEW_IMAGE_PATH="$FOLDER_PATH/new/"
+OPTION_PATH="$FOLDER_PATH/option/"
 # ERROR_IMAGE="noNetwork.png"
 
 HELP="Use : autocatgirl [OPTION] ... [PATH]
@@ -18,6 +19,8 @@ Loads a catgirl image to show in Neofetch.
   -s        Saves the image to the give path
   -a        Saves the image link to your favorites
   -f        Shows your favorites
+  -o on     Enables autocatgirl
+  -o off    Disables autocatgirl
 "
 
 # Creates the various folder and file if they don't exist
@@ -25,13 +28,14 @@ Loads a catgirl image to show in Neofetch.
 mkdir -p "$FOLDER_PATH"
 mkdir -p "$NEW_IMAGE_PATH"
 mkdir -p "$OLD_IMAGE_PATH"
+mkdir -p "$OPTION_PATH"
 touch "$FAVORITE_PATH"
 
 
 
 # Manages all call to autocatgirl with parameters
 
-while getopts "hs:af" option
+while getopts "hs:afo:" option
 do
     case $option in
     h)
@@ -39,7 +43,7 @@ do
         exit 0
         ;;
     s)
-        echo "Saving your catgirl $(ls -c "$OLD_IMAGE_PATH" | tail -n 1) at the path : $OPTARG"
+        echo "Saving your catgirl $(/bin/env ls -c "$OLD_IMAGE_PATH" | tail -n 1) at the path : $OPTARG"
         cp "$OLD_IMAGE_PATH"* "$OPTARG"
         if [ $? -ne 0 ]
         then 
@@ -50,7 +54,7 @@ do
         exit 0
         ;;
     a)
-        FAV_IMAGE=$(ls -c $OLD_IMAGE_PATH | tail -n 1)
+        FAV_IMAGE=$(/bin/env ls -c $OLD_IMAGE_PATH | tail -n 1)
         echo "Adding $FAV_IMAGE to your favorites."
 
         if [ $(grep "$FAV_IMAGE" "$FAVORITE_PATH") ]
@@ -72,6 +76,28 @@ do
         cat "$FAVORITE_PATH"
         exit 0
         ;;
+    o)  
+        case "$OPTARG" in
+            on)
+                if [ -f "$OPTION_PATH/off" ]
+                then
+                    rm $OPTION_PATH/off
+                    echo "Cute catgirls will now appear in every new terminal"
+                else
+                    echo "Catgirls already appear in your terminal"
+                fi
+                exit 0;;
+            off)
+                if ! [ -f "$OPTION_PATH/off" ]
+                then
+                    touch "${OPTION_PATH}off"
+                    echo "Catgirls will no longer appear in your terminal, have they done something wrong ?"
+                else
+                    echo "Catgirls already do not appear, do you hate them that much ?"
+                fi
+                exit 0;;
+        esac
+        exit 0;;
     \?)
         echo "ERROR : Wrong arguments given"
         echo "$HELP"
@@ -111,7 +137,10 @@ fi
 # Moves the downloaded one to new folder
 rm "$OLD_IMAGE_PATH"* > /dev/null 2>&1
 mv "$NEW_IMAGE_PATH"* "$OLD_IMAGE_PATH" > /dev/null 2>&1
-mv "$FOLDER_PATH/$IMAGE_NAME" "$NEW_IMAGE_PATH" > /dev/null 2>&1
-convert "$NEW_IMAGE_PATH/$IMAGE_NAME" -resize 512x512\> "$NEW_IMAGE_PATH/$IMAGE_NAME"
+if ! [ -f "$OPTION_PATH/off" ]
+then
+    mv "$FOLDER_PATH/$IMAGE_NAME" "$NEW_IMAGE_PATH" > /dev/null 2>&1
+    convert "$NEW_IMAGE_PATH/$IMAGE_NAME" -resize 512x512\> "$NEW_IMAGE_PATH/$IMAGE_NAME"
+fi
 
 rm -rf ~/.cache/thumbnails/neofetch/*

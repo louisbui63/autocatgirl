@@ -12,7 +12,7 @@ Install the dependencies: `wget`, `imagemagick`, `jq`, `neowofetch`
 Copy ``autocatgirl`` to ``/usr/local/bin``. Launch once to set the folders. Edit your .bashrc or equivalent with : 
 ```bash
 # Autocatgirl
-neowofetch --backend kitty --source "$HOME/.autocatgirl/new/$(ls -c "$HOME/.autocatgirl/new"* | tail -n 1)" --size none
+neowofetch --backend kitty --source "$HOME/.autocatgirl/new/$(/bin/env ls -c "$HOME/.autocatgirl/new"* | tail -n 1)" --size none
 (autocatgirl &) &> /dev/null
 ```
 
@@ -32,6 +32,11 @@ Shows the images you saved
 
 `autocatgirl -h` \
 Shows a quick help.
+
+`autocatgirl -o` \
+Gives you access to the options :
+* `autocatgirl -o on` enables autocatgirl
+* `autocatgirl -o off` disables autocatgirl
 
 ### Step 4 : Enjoy & share !
 Enjoy and share with others.
