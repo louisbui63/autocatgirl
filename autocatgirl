@@ -43,7 +43,7 @@ do
         exit 0
         ;;
     s)
-        echo "Saving your catgirl $(/bin/env ls -c "$OLD_IMAGE_PATH" | tail -n 1) at the path : $OPTARG"
+        echo "Saving your catgirl $(ls -c "$OLD_IMAGE_PATH" | tail -n 1) at the path : $OPTARG"
         cp "$OLD_IMAGE_PATH"* "$OPTARG"
         if [ $? -ne 0 ]
         then 
@@ -54,7 +54,7 @@ do
         exit 0
         ;;
     a)
-        FAV_IMAGE=$(/bin/env ls -c $OLD_IMAGE_PATH | tail -n 1)
+        FAV_IMAGE=$(ls -c $OLD_IMAGE_PATH | tail -n 1)
         echo "Adding $FAV_IMAGE to your favorites."
 
         if [ $(grep "$FAV_IMAGE" "$FAVORITE_PATH") ]
@@ -93,7 +93,7 @@ do
                     touch "${OPTION_PATH}off"
                     echo "Catgirls will no longer appear in your terminal, have they done something wrong ?"
                 else
-                    echo "Catgirls already do not appear, do you hate them that much ?"
+                    echo "Catgirls already don't appear, do you hate them that much ?"
                 fi
                 exit 0;;
         esac
