@@ -43,7 +43,7 @@ do
         exit 0
         ;;
     s)
-        echo "Saving your catgirl $(ls -c "$OLD_IMAGE_PATH" | tail -n 1) at the path : $OPTARG"
+        echo "Saving your catgirl $(/bin/env ls -c "$OLD_IMAGE_PATH" | tail -n 1) at the path : $OPTARG"
         cp "$OLD_IMAGE_PATH"* "$OPTARG"
         if [ $? -ne 0 ]
         then 
@@ -54,7 +54,7 @@ do
         exit 0
         ;;
     a)
-        FAV_IMAGE=$(ls -c $OLD_IMAGE_PATH | tail -n 1)
+        FAV_IMAGE=$(/bin/env ls -c $OLD_IMAGE_PATH | tail -n 1)
         echo "Adding $FAV_IMAGE to your favorites."
 
         if [ $(grep "$FAV_IMAGE" "$FAVORITE_PATH") ]
