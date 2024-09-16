@@ -35,8 +35,8 @@ Shows a quick help.
 
 `autocatgirl -o` \
 Gives you access to the options :
-* `autocatgirl -o on` activates autocatgirl
-* `autocatgirl -o off` desactivates autocatgirl
+* `autocatgirl -o on` enables autocatgirl
+* `autocatgirl -o off` disables autocatgirl
 
 ### Step 4 : Enjoy & share !
 Enjoy and share with others.
