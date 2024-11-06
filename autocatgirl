@@ -88,7 +88,7 @@ do
                     (
                         wget -q "$IMAGE_URL" -O "$FOLDER_PATH/$IMAGE_NAME" > /dev/null 2>&1
                         mv "$FOLDER_PATH/$IMAGE_NAME" "$NEW_IMAGE_PATH" > /dev/null 2>&1
-                        convert "$NEW_IMAGE_PATH/$IMAGE_NAME" -resize 512x512\> "$NEW_IMAGE_PATH/$IMAGE_NAME"
+                        magick "$NEW_IMAGE_PATH/$IMAGE_NAME" -resize 512x512\> "$NEW_IMAGE_PATH/$IMAGE_NAME"
                     )&
                     echo "Cute catgirls will now appear in every new terminal"
                 else
@@ -152,7 +152,7 @@ then
     mv "$NEW_IMAGE_PATH"* "$OLD_IMAGE_PATH" > /dev/null 2>&1
 
     mv "$FOLDER_PATH/$IMAGE_NAME" "$NEW_IMAGE_PATH" > /dev/null 2>&1
-    convert "$NEW_IMAGE_PATH/$IMAGE_NAME" -resize 512x512\> "$NEW_IMAGE_PATH/$IMAGE_NAME"
+    magick "$NEW_IMAGE_PATH/$IMAGE_NAME" -resize 512x512\> "$NEW_IMAGE_PATH/$IMAGE_NAME"
 fi
 
 rm -rf ~/.cache/thumbnails/neofetch/*
