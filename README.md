@@ -16,7 +16,7 @@ neowofetch --backend kitty --source "$HOME/.autocatgirl/new/$(/bin/env ls -c "$H
 (autocatgirl &) &> /dev/null
 ```
 
-> Execute autocatgirl at least 2 times so that it can set up its folder and preloaded images.
+> Execute autocatgirl at least twice so that it can set up its folder and preloaded images.
 
 ### Step 3 : Usage
 When opening a terminal a catgirl image will be loaded. You can use autocatgirl to perform the following actions :
