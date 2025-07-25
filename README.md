@@ -5,7 +5,7 @@ Display new catgirls every time you run your terminal
 ## Installation 
 
 ### Step 1 : Dependancies
-Install the dependencies: `wget`, `imagemagick`, `jq`, `neowofetch`
+Install the dependencies: `bash`, `wget`, `imagemagick`, `jq`, `neowofetch`
 
 ### Step 2 : Files
 

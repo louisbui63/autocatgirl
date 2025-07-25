@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 #   ==== Variables & Path   ====
 
@@ -23,7 +23,12 @@ Loads a catgirl image to show in Neofetch.
   -f        Shows your favorites
   -o on     Enables autocatgirl
   -o off    Disables autocatgirl
+  -i        Show informations about the currently displayed image and its author, if available
 "
+
+# Enable globbing for hidden files
+
+shopt -s dotglob
 
 # Creates the various folder and file if they don't exist
 
@@ -37,7 +42,7 @@ touch "$FAVORITE_PATH"
 
 # Manages all call to autocatgirl with parameters
 
-while getopts "hs:afo:" option
+while getopts "hs:afio:" option
 do
     case $option in
     h)
@@ -45,8 +50,10 @@ do
         exit 0
         ;;
     s)
-        echo "Saving your catgirl $(ls -c "$OLD_IMAGE_PATH" | tail -n 1) at the path : $OPTARG"
+        echo "Saving your catgirl $(ls -c "$OLD_IMAGE_PATH" | tail -n 1) at the path: $OPTARG"
+        shopt -u dotglob
         cp "$OLD_IMAGE_PATH"* "$OPTARG"
+        shopt -s dotglob
         if [ $? -ne 0 ]
         then 
             echo "ERROR: Unable to save the image."
@@ -78,16 +85,22 @@ do
         cat "$FAVORITE_PATH"
         exit 0
         ;;
+    i)
+        cat "$OLD_IMAGE_PATH/.info"
+        exit 0
+        ;;
     o)  
         case "$OPTARG" in
             on)
                 if [ -f "$OPTION_PATH/off" ]
                 then
                     rm $OPTION_PATH/off
-                    IMAGE_URL=$(curl "$API_URL" -s | jq -r .[0].url)
+                    API_RESP=$(curl "$API_URL" -s)
+                    IMAGE_URL=$(echo "$API_RESP" | jq -r .[0].url)
                     IMAGE_NAME=$(echo "$IMAGE_URL" | rev | cut -d'/' -f1 | rev)
 
                     (
+                        echo "$API_RESP" | jq -r '.[0].artist_name,.[0].source_url' > "$NEW_IMAGE_PATH/.info" 2>/dev/null
                         wget -q "$IMAGE_URL" -O "$FOLDER_PATH/$IMAGE_NAME" > /dev/null 2>&1
                         mv "$FOLDER_PATH/$IMAGE_NAME" "$NEW_IMAGE_PATH" > /dev/null 2>&1
                         convert "$NEW_IMAGE_PATH/$IMAGE_NAME" -resize 512x512\> "$NEW_IMAGE_PATH/$IMAGE_NAME"
@@ -103,9 +116,9 @@ do
                     touch "${OPTION_PATH}off"
                     rm "$OLD_IMAGE_PATH"* > /dev/null 2>&1
                     mv "$NEW_IMAGE_PATH"* "$OLD_IMAGE_PATH" > /dev/null 2>&1
-                    echo "Catgirls will no longer appear in your terminal, have they done something wrong ?"
+                    echo "Catgirls will no longer appear in your terminal, have they done something wrong?"
                 else
-                    echo "Catgirls already don't appear, do you hate them that much ?"
+                    echo "Catgirls already don't appear, do you hate them that much?"
                 fi
                 exit 0;;
         esac
@@ -129,7 +142,8 @@ then
     rm -f $FOLDER_PATH/neko*
 
     # Downloading image
-    IMAGE_URL=$(curl "$API_URL" -s | jq -r .[0].url)
+    API_RESP=$(curl "$API_URL" -s)
+    IMAGE_URL=$(echo "$API_RESP" | jq -r .[0].url)
     IMAGE_NAME=$(echo "$IMAGE_URL" | rev | cut -d'/' -f1 | rev)
 
     wget -q "$IMAGE_URL" -O "$FOLDER_PATH/$IMAGE_NAME" > /dev/null 2>&1
@@ -148,11 +162,12 @@ then
     fi
 
     # Deletes the image in old folder
-    # Moves the image frome new to old folder
+    # Moves the image from new to old folder
     # Moves the downloaded one to new folder
     rm "$OLD_IMAGE_PATH"* > /dev/null 2>&1
     mv "$NEW_IMAGE_PATH"* "$OLD_IMAGE_PATH" > /dev/null 2>&1
 
+    echo "$API_RESP" | jq -r '.[0].artist_name,.[0].source_url' > "$NEW_IMAGE_PATH/.info" 2>/dev/null
     mv "$FOLDER_PATH/$IMAGE_NAME" "$NEW_IMAGE_PATH" > /dev/null 2>&1
     convert "$NEW_IMAGE_PATH/$IMAGE_NAME" -resize 512x512\> "$NEW_IMAGE_PATH/$IMAGE_NAME"
 fi
