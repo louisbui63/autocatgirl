@@ -21,7 +21,7 @@ Loads a catgirl image to show in Neofetch.
   -s        Saves the image to the give path
   -a        Saves the image link to your favorites
   -f        Shows your favorites
-  -i        Show informations about the currently displayed image and its author, if available
+  -i        Show informations about the image and its author, if available
   -o on     Enables autocatgirl
   -o off    Disables autocatgirl
 "
