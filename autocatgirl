@@ -2,8 +2,10 @@
 
 #   ==== Variables & Path   ====
 
-API_URL="https://nekos.life/api/v2/img/neko"
-IMAGE_URL="https://cdn.nekos.life/neko/"
+RATINGS="safe"
+TAGS="catgirl"
+API_URL="https://api.nekosapi.com/v4/images/random?rating=$RATINGS&tags=$TAGS&limit=1"
+IMAGE_URL="https://s3.nyeki.dev/nekos-api/images/original/"
 FOLDER_PATH="$HOME/.autocatgirl"
 
 FAVORITE_PATH="$FOLDER_PATH/favorites"
@@ -82,7 +84,7 @@ do
                 if [ -f "$OPTION_PATH/off" ]
                 then
                     rm $OPTION_PATH/off
-                    IMAGE_URL=$(curl "$API_URL" -s | jq -r .url)
+                    IMAGE_URL=$(curl "$API_URL" -s | jq -r .[0].url)
                     IMAGE_NAME=$(echo "$IMAGE_URL" | rev | cut -d'/' -f1 | rev)
 
                     (
@@ -127,7 +129,7 @@ then
     rm -f $FOLDER_PATH/neko*
 
     # Downloading image
-    IMAGE_URL=$(curl "$API_URL" -s | jq -r .url)
+    IMAGE_URL=$(curl "$API_URL" -s | jq -r .[0].url)
     IMAGE_NAME=$(echo "$IMAGE_URL" | rev | cut -d'/' -f1 | rev)
 
     wget -q "$IMAGE_URL" -O "$FOLDER_PATH/$IMAGE_NAME" > /dev/null 2>&1
