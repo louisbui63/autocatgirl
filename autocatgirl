@@ -49,10 +49,10 @@ do
         cp "$OLD_IMAGE_PATH"* "$OPTARG"
         if [ $? -ne 0 ]
         then 
-            echo "ERROR : Unable to save the image."
+            echo "ERROR: Unable to save the image."
             exit 1
         fi
-        echo "Image saved successfully !"
+        echo "Image saved successfully!"
         exit 0
         ;;
     a)
@@ -61,20 +61,20 @@ do
 
         if [ $(grep "$FAV_IMAGE" "$FAVORITE_PATH") ]
         then
-            echo "WARNING : This image is already in your favorites."
+            echo "WARNING: This image is already in your favorites."
 
         else
             echo "$IMAGE_URL$FAV_IMAGE" >> "$FAVORITE_PATH"
             if [ $? -ne 0 ]
             then 
-                echo "ERROR : Unable to add this catgirl to favorites."
+                echo "ERROR: Unable to add this catgirl to favorites."
                 exit 1
             fi
         fi
         exit 0
         ;;
     f)
-        echo "Your most beloved catgirls :"
+        echo "Your most beloved catgirls:"
         cat "$FAVORITE_PATH"
         exit 0
         ;;
@@ -111,7 +111,7 @@ do
         esac
         exit 0;;
     \?)
-        echo "ERROR : Wrong arguments given"
+        echo "ERROR: Wrong arguments given"
         echo "$HELP"
         exit 1
         ;;
@@ -119,8 +119,8 @@ do
 done
 
 # Calls the API and update the new and old image folder.
-# Note : this could probably be done with find and exec but hey it works
-# Note2 : Yeah regex everywhere is probably not a very a safe idea. I'm open to suggestion.
+# Note: this could probably be done with find and exec but hey it works
+# Note 2: Yeah regex everywhere is probably not a very safe idea. I'm open to suggestion.
 
 
 if ! [ -f "$OPTION_PATH/off" ]
