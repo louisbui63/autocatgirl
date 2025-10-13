@@ -1,9 +1,11 @@
-#! /bin/sh
+#! /bin/bash
 
 #   ==== Variables & Path   ====
 
-API_URL="https://nekos.life/api/v2/img/neko"
-IMAGE_URL="https://cdn.nekos.life/neko/"
+RATINGS="safe"
+TAGS="catgirl"
+API_URL="https://api.nekosapi.com/v4/images/random?rating=$RATINGS&tags=$TAGS&limit=1"
+IMAGE_URL="https://s3.nyeki.dev/nekos-api/images/original/"
 FOLDER_PATH="$HOME/.autocatgirl"
 
 FAVORITE_PATH="$FOLDER_PATH/favorites"
@@ -19,9 +21,14 @@ Loads a catgirl image to show in Neofetch.
   -s        Saves the image to the give path
   -a        Saves the image link to your favorites
   -f        Shows your favorites
+  -i        Show informations about the image and its author, if available
   -o on     Enables autocatgirl
   -o off    Disables autocatgirl
 "
+
+# Enable globbing for hidden files
+
+shopt -s dotglob
 
 # Creates the various folder and file if they don't exist
 
@@ -35,7 +42,7 @@ touch "$FAVORITE_PATH"
 
 # Manages all call to autocatgirl with parameters
 
-while getopts "hs:afo:" option
+while getopts "hs:afio:" option
 do
     case $option in
     h)
@@ -43,14 +50,16 @@ do
         exit 0
         ;;
     s)
-        echo "Saving your catgirl $(ls -c "$OLD_IMAGE_PATH" | tail -n 1) at the path : $OPTARG"
+        echo "Saving your catgirl $(ls -c "$OLD_IMAGE_PATH" | tail -n 1) at the path: $OPTARG"
+        shopt -u dotglob
         cp "$OLD_IMAGE_PATH"* "$OPTARG"
+        shopt -s dotglob
         if [ $? -ne 0 ]
         then 
-            echo "ERROR : Unable to save the image."
+            echo "ERROR: Unable to save the image."
             exit 1
         fi
-        echo "Image saved successfully !"
+        echo "Image saved successfully!"
         exit 0
         ;;
     a)
@@ -59,21 +68,25 @@ do
 
         if [ $(grep "$FAV_IMAGE" "$FAVORITE_PATH") ]
         then
-            echo "WARNING : This image is already in your favorites."
+            echo "WARNING: This image is already in your favorites."
 
         else
             echo "$IMAGE_URL$FAV_IMAGE" >> "$FAVORITE_PATH"
             if [ $? -ne 0 ]
             then 
-                echo "ERROR : Unable to add this catgirl to favorites."
+                echo "ERROR: Unable to add this catgirl to favorites."
                 exit 1
             fi
         fi
         exit 0
         ;;
     f)
-        echo "Your most beloved catgirls :"
+        echo "Your most beloved catgirls:"
         cat "$FAVORITE_PATH"
+        exit 0
+        ;;
+    i)
+        cat "$OLD_IMAGE_PATH/.info"
         exit 0
         ;;
     o)  
@@ -82,10 +95,12 @@ do
                 if [ -f "$OPTION_PATH/off" ]
                 then
                     rm $OPTION_PATH/off
-                    IMAGE_URL=$(curl "$API_URL" -s | jq -r .url)
+                    API_RESP=$(curl "$API_URL" -s)
+                    IMAGE_URL=$(echo "$API_RESP" | jq -r .[0].url)
                     IMAGE_NAME=$(echo "$IMAGE_URL" | rev | cut -d'/' -f1 | rev)
 
                     (
+                        echo "$API_RESP" | jq -r '.[0].artist_name,.[0].source_url' > "$NEW_IMAGE_PATH/.info" 2>/dev/null
                         wget -q "$IMAGE_URL" -O "$FOLDER_PATH/$IMAGE_NAME" > /dev/null 2>&1
                         mv "$FOLDER_PATH/$IMAGE_NAME" "$NEW_IMAGE_PATH" > /dev/null 2>&1
                         magick "$NEW_IMAGE_PATH/$IMAGE_NAME" -resize 512x512\> "$NEW_IMAGE_PATH/$IMAGE_NAME"
@@ -101,15 +116,15 @@ do
                     touch "${OPTION_PATH}off"
                     rm "$OLD_IMAGE_PATH"* > /dev/null 2>&1
                     mv "$NEW_IMAGE_PATH"* "$OLD_IMAGE_PATH" > /dev/null 2>&1
-                    echo "Catgirls will no longer appear in your terminal, have they done something wrong ?"
+                    echo "Catgirls will no longer appear in your terminal, have they done something wrong?"
                 else
-                    echo "Catgirls already don't appear, do you hate them that much ?"
+                    echo "Catgirls already don't appear, do you hate them that much?"
                 fi
                 exit 0;;
         esac
         exit 0;;
     \?)
-        echo "ERROR : Wrong arguments given"
+        echo "ERROR: Wrong arguments given"
         echo "$HELP"
         exit 1
         ;;
@@ -117,8 +132,8 @@ do
 done
 
 # Calls the API and update the new and old image folder.
-# Note : this could probably be done with find and exec but hey it works
-# Note2 : Yeah regex everywhere is probably not a very a safe idea. I'm open to suggestion.
+# Note: this could probably be done with find and exec but hey it works
+# Note 2: Yeah regex everywhere is probably not a very safe idea. I'm open to suggestion.
 
 
 if ! [ -f "$OPTION_PATH/off" ]
@@ -127,7 +142,8 @@ then
     rm -f $FOLDER_PATH/neko*
 
     # Downloading image
-    IMAGE_URL=$(curl "$API_URL" -s | jq -r .url)
+    API_RESP=$(curl "$API_URL" -s)
+    IMAGE_URL=$(echo "$API_RESP" | jq -r .[0].url)
     IMAGE_NAME=$(echo "$IMAGE_URL" | rev | cut -d'/' -f1 | rev)
 
     wget -q "$IMAGE_URL" -O "$FOLDER_PATH/$IMAGE_NAME" > /dev/null 2>&1
@@ -146,11 +162,12 @@ then
     fi
 
     # Deletes the image in old folder
-    # Moves the image frome new to old folder
+    # Moves the image from new to old folder
     # Moves the downloaded one to new folder
     rm "$OLD_IMAGE_PATH"* > /dev/null 2>&1
     mv "$NEW_IMAGE_PATH"* "$OLD_IMAGE_PATH" > /dev/null 2>&1
 
+    echo "$API_RESP" | jq -r '.[0].artist_name,.[0].source_url' > "$NEW_IMAGE_PATH/.info" 2>/dev/null
     mv "$FOLDER_PATH/$IMAGE_NAME" "$NEW_IMAGE_PATH" > /dev/null 2>&1
     magick "$NEW_IMAGE_PATH/$IMAGE_NAME" -resize 512x512\> "$NEW_IMAGE_PATH/$IMAGE_NAME"
 fi
