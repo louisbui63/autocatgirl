@@ -103,7 +103,7 @@ do
                         echo "$API_RESP" | jq -r '.[0].artist_name,.[0].source_url' > "$NEW_IMAGE_PATH/.info" 2>/dev/null
                         wget -q "$IMAGE_URL" -O "$FOLDER_PATH/$IMAGE_NAME" > /dev/null 2>&1
                         mv "$FOLDER_PATH/$IMAGE_NAME" "$NEW_IMAGE_PATH" > /dev/null 2>&1
-                        convert "$NEW_IMAGE_PATH/$IMAGE_NAME" -resize 512x512\> "$NEW_IMAGE_PATH/$IMAGE_NAME"
+                        magick "$NEW_IMAGE_PATH/$IMAGE_NAME" -resize 512x512\> "$NEW_IMAGE_PATH/$IMAGE_NAME"
                     )&
                     echo "Cute catgirls will now appear in every new terminal"
                 else
@@ -169,7 +169,7 @@ then
 
     echo "$API_RESP" | jq -r '.[0].artist_name,.[0].source_url' > "$NEW_IMAGE_PATH/.info" 2>/dev/null
     mv "$FOLDER_PATH/$IMAGE_NAME" "$NEW_IMAGE_PATH" > /dev/null 2>&1
-    convert "$NEW_IMAGE_PATH/$IMAGE_NAME" -resize 512x512\> "$NEW_IMAGE_PATH/$IMAGE_NAME"
+    magick "$NEW_IMAGE_PATH/$IMAGE_NAME" -resize 512x512\> "$NEW_IMAGE_PATH/$IMAGE_NAME"
 fi
 
 rm -rf ~/.cache/thumbnails/neofetch/*
